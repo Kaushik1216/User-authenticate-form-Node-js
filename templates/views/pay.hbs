@@ -1,0 +1,56 @@
+
+<html lang="en">
+{{>header}}
+<style>
+    
+</style>
+<body>
+    {{>navbar}}
+ <h1>Intergration razopay</h1>
+ <button class="btn-primary" id="paypls">PAY</button>
+ 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('paypls').onclick = async function(e){
+       
+       e.preventDefault();
+       let response= await fetch("http://localhost:8000/payment",{
+        method:"POST",
+        headers:{
+            "Content-Type":"apllication/json"
+        },
+        body:JSON.stringify({
+            amount:500,
+        })
+       }
+       )
+
+       let orderData =await response.json();
+       console.log(orderData);
+       var options = {
+       "key": "3J9om4kjQkbUFnEd0Hgh2nb1", 
+       "amount": "500", 
+       "currency": "INR",
+       "order_id": orderData.id,  
+       handler: function (response){
+           console.log(response)
+           alert("This step of Payment Succeeded");
+       },
+       "theme": {
+           "color": "#2300a3"
+       }
+   };
+   var razorpayObject = new Razorpay(options);
+   razorpayObject.open();
+   console.log(razorpayObject);
+   razorpayObject.on('payment.failed', function (response){
+         console.log(response);
+         alert("This step of Payment Failed");
+   });
+   };
+   
+     
+   
+</script>
+</body>
+</html>
